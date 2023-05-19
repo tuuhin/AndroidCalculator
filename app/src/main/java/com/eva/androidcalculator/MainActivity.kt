@@ -3,6 +3,7 @@ package com.eva.androidcalculator
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.eva.androidcalculator.presentation.CalculatorScreen
 import com.eva.androidcalculator.ui.theme.AndroidCalculatorTheme
 
 class MainActivity : ComponentActivity() {
@@ -10,8 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AndroidCalculatorTheme {
-                // A surface container using the 'background' color from the theme
-
+                CalculatorScreen()
             }
         }
     }
