@@ -6,37 +6,27 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.eva.androidcalculator.presentation.util.CalculatorEvents
-import com.eva.androidcalculator.presentation.util.actions
+import com.eva.androidcalculator.presentation.util.extraActions
 
 @Composable
-fun CalculatorGrid(
+fun CalculatorExtraButtons(
     modifier: Modifier = Modifier,
     onTap: (CalculatorEvents) -> Unit,
 ) {
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(4),
-        userScrollEnabled = false,
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        contentPadding = PaddingValues(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 10.dp),
+        userScrollEnabled = false
     ) {
-        items(actions.size) { idx ->
+        items(extraActions.size) { idx ->
             CalculatorButton(
-                action = actions[idx],
-                onClick = {
-                    onTap(actions[idx].onPress)
-                },
+                onClick = { onTap(extraActions[idx].onPress) },
+                action = extraActions[idx]
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CalculatorGridPreview() {
-    CalculatorGrid(onTap = {})
 }
