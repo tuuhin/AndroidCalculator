@@ -78,7 +78,8 @@ fun CalculatorScreen(
                     title = { Text(text = "Calculator") },
                     actions = {
                         IconButton(
-                            onClick = { isExtraOptionsVisible = !isExtraOptionsVisible }) {
+                            onClick = { isExtraOptionsVisible = !isExtraOptionsVisible },
+                        ) {
                             Icon(
                                 imageVector = Icons.Outlined.MoreVert,
                                 contentDescription = "Extra functions"
@@ -99,7 +100,6 @@ fun CalculatorScreen(
                 CalculatorResultDisplay(
                     expression = expression,
                     isError = isError,
-                    textColor = MaterialTheme.colorScheme.onTertiaryContainer,
                     result = result,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -114,7 +114,7 @@ fun CalculatorScreen(
                     } + fadeIn(),
                     exit = slideOutVertically {
                         with(density) { 40.dp.roundToPx() }
-                    } + fadeOut()
+                    } + fadeOut(),
                 ) {
                     CalculatorExtraButtons(
                         modifier = Modifier

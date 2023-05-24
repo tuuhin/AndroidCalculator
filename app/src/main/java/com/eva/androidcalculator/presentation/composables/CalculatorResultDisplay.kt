@@ -15,12 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -29,8 +29,7 @@ fun CalculatorResultDisplay(
     expression: String,
     isError: Boolean,
     result: String,
-    textColor: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
 
     val hScroll = rememberScrollState()
@@ -40,29 +39,35 @@ fun CalculatorResultDisplay(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.End
     ) {
-        BasicTextField(
-            value = expression,
-            onValueChange = {},
-            textStyle = TextStyle(
-                fontSize = 50.sp,
-                color = if (isError)
-                    MaterialTheme.colorScheme.onErrorContainer
-                else
-                    textColor,
-                textAlign = TextAlign.End,
-                fontWeight = FontWeight.Bold,
-            ),
-            maxLines = 1,
-            singleLine = true,
-            readOnly = true,
-            cursorBrush = SolidColor(textColor),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-
-        )
         AnimatedVisibility(
-            visible = result.isNotEmpty() || expression != "0",
+            visible = expression.isNotEmpty(),
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            BasicTextField(
+                value = expression,
+                onValueChange = {},
+                textStyle = TextStyle(
+                    fontSize = 48.sp,
+                    color = if (isError)
+                        MaterialTheme.colorScheme.onErrorContainer
+                    else
+                        MaterialTheme.colorScheme.onTertiaryContainer,
+                    textAlign = TextAlign.End,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 4.sp,
+                ),
+                maxLines = 1,
+                singleLine = true,
+                readOnly = true,
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.onTertiaryContainer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            )
+        }
+        AnimatedVisibility(
+            visible = result.isNotEmpty(),
             enter = fadeIn(),
             exit = fadeOut()
         ) {
@@ -72,13 +77,13 @@ fun CalculatorResultDisplay(
                     .padding(vertical = 8.dp, horizontal = 20.dp)
                     .horizontalScroll(hScroll),
                 style = TextStyle(
-                    fontSize = 40.sp,
+                    fontSize = 36.sp,
                     color = if (isError)
                         MaterialTheme.colorScheme.onErrorContainer
                     else
-                        textColor,
+                        MaterialTheme.colorScheme.onTertiaryContainer,
                     textAlign = TextAlign.End,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                 ), overflow = TextOverflow.Ellipsis
             )
         }
@@ -86,4 +91,14 @@ fun CalculatorResultDisplay(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CalculatorResultDisplayPreview() {
+    CalculatorResultDisplay(
+        expression = "2+3",
+        isError = false,
+        result = "5",
+    )
 }

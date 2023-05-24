@@ -19,13 +19,13 @@ class ExpressionEvaluator {
         while (true) {
             when (remaining.firstOrNull()) {
                 Expression.Operation(Operators.ADD) -> {
-                    val term = evalExpression(remaining.drop(1))
+                    val term = evalTerm(remaining.drop(1))
                     sum += term.value
                     remaining = term.remaining
                 }
 
                 Expression.Operation(Operators.SUBTRACT) -> {
-                    val term = evalExpression(remaining.drop(1))
+                    val term = evalTerm(remaining.drop(1))
                     sum -= term.value
                     remaining = term.remaining
                 }
@@ -41,10 +41,10 @@ class ExpressionEvaluator {
         var sum = result.value
         while (true) {
             when (remaining.firstOrNull()) {
-                Expression.Operation(Operators.MULTIPLY) -> {
-                    val term = evalFactor(remaining.drop(1))
-                    sum *= term.value
-                    remaining = term.remaining
+                Expression.Operation(Operators.EXPONENT) -> {
+                    val factor = evalFactor(remaining.drop(1))
+                    sum *= sum.pow(factor.value - 1)
+                    remaining = factor.remaining
                 }
 
                 Expression.Operation(Operators.DIVIDE) -> {
@@ -53,17 +53,19 @@ class ExpressionEvaluator {
                     remaining = term.remaining
                 }
 
+                Expression.Operation(Operators.MULTIPLY) -> {
+                    val term = evalFactor(remaining.drop(1))
+                    sum *= term.value
+                    remaining = term.remaining
+                }
+
+
                 Expression.Operation(Operators.PERCENTAGE) -> {
                     val factor = evalFactor(remaining.drop(1))
                     sum *= (factor.value / 100.0)
                     remaining = factor.remaining
                 }
 
-                Expression.Operation(Operators.EXPONENT) -> {
-                    val factor = evalFactor(remaining.drop(1))
-                    sum *= sum.pow(factor.value)
-                    remaining = factor.remaining
-                }
 
                 Expression.PI -> {
                     val factor = evalFactor(remaining.drop(1))
@@ -80,9 +82,7 @@ class ExpressionEvaluator {
         return when (val part = expression.firstOrNull()) {
             Expression.Operation(Operators.ADD) -> evalFactor(expression.drop(1))
             Expression.Operation(Operators.SUBTRACT) ->
-                evalFactor(expression.drop(1)).run {
-                    ExpressionResult(remaining, -value)
-                }
+                evalFactor(expression.drop(1)).run { ExpressionResult(remaining, -value) }
 
             Expression.Parenthesis(ParenthesisType.Opening) ->
                 evalExpression(expression.drop(1)).run {

@@ -106,7 +106,7 @@ class ExpressionEvaluatorTest {
             Expression.Parenthesis(ParenthesisType.Closing)
         )
         val result = String.format("%.5f", expressionEvaluator.evaluate(expression))
-        val actual = 392.69908
+        val actual = 78.53982
         assertEquals(result, actual.toString())
     }
 
@@ -118,6 +118,22 @@ class ExpressionEvaluatorTest {
             Expression.Number(1.0)
         )
         assertEquals(expressionEvaluator.evaluate(expression), 12.566370614359172)
+    }
+
+    @Test
+    fun `checking the result fir 9-8+2x2`() {
+        val expression = listOf(
+            Expression.Number(9.0),
+            Expression.Operation(Operators.SUBTRACT),
+            Expression.Number(8.0),
+            Expression.Operation(Operators.ADD),
+            Expression.Number(2.0),
+            Expression.Operation(Operators.MULTIPLY),
+            Expression.Number(2.0)
+        )
+        val result = expressionEvaluator.evaluate(expression)
+        val actual = 5.0
+        assertEquals(result, actual)
     }
 
     @Test
