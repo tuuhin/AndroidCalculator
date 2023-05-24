@@ -10,10 +10,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -52,6 +50,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun CalculatorScreen(
     expression: String,
     result: String,
+    isError: Boolean,
     onCalculatorEvent: (CalculatorEvents) -> Unit,
     modifier: Modifier = Modifier,
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -99,16 +98,15 @@ fun CalculatorScreen(
             ) {
                 CalculatorResultDisplay(
                     expression = expression,
+                    isError = isError,
                     textColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    result = result,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
                         .clip(RoundedCornerShape(bottomEnd = 25.dp, bottomStart = 25.dp))
                         .background(statusColor)
-                        .padding(32.dp)
-
                 )
-                Spacer(modifier = Modifier.height(4.dp))
                 AnimatedVisibility(
                     visible = isExtraOptionsVisible,
                     enter = slideInVertically {
@@ -140,6 +138,7 @@ fun CalculatorScreenPreview() {
     CalculatorScreen(
         expression = "",
         result = "",
-        onCalculatorEvent = {}
+        onCalculatorEvent = {},
+        isError = false
     )
 }

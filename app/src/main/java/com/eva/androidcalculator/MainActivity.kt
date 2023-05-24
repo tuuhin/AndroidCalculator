@@ -19,10 +19,12 @@ class MainActivity : ComponentActivity() {
                 val viewModel by viewModels<CalculatorViewModel>()
                 val expression by viewModel.expression.collectAsStateWithLifecycle()
                 val result by viewModel.result.collectAsStateWithLifecycle()
+                val isError by viewModel.isResultError.collectAsStateWithLifecycle()
 
                 CalculatorScreen(
                     expression = expression,
                     result = result,
+                    isError = isError,
                     onCalculatorEvent = viewModel::onCalculatorEvent
                 )
             }

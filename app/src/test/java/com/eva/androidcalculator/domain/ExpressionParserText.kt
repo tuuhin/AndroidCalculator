@@ -1,18 +1,11 @@
 package com.eva.androidcalculator.domain
 
 import org.junit.Test
-import org.junit.Before
 import junit.framework.TestCase.assertEquals
 
 
 class ExpressionParserTest {
-    private lateinit var expressionParser: ExpressionParser
-
-
-    @Before
-    fun setup() {
-        expressionParser = ExpressionParser()
-    }
+    private val expressionParser = ExpressionParser()
 
     @Test
     fun `normal sum text parsing`() {
@@ -101,12 +94,25 @@ class ExpressionParserTest {
     }
 
     @Test
+    fun `normal pi expression`() {
+        val expression = "12π"
+        val result = listOf(
+            Expression.Number(12.0),
+            Expression.PI,
+            Expression.Number(1.0)
+        )
+        assertEquals(expressionParser.parse(expression), result)
+    }
+
+    @Test
     fun `expression with sqrt`() {
-        val expression = "2+√2"
+        val expression = "2+√2-2"
         val result = listOf(
             Expression.Number(2.0),
             Expression.Operation(Operators.ADD),
-            Expression.Sqrt(2.0)
+            Expression.Sqrt(2.0),
+            Expression.Operation(Operators.SUBTRACT),
+            Expression.Number(2.0)
         )
         assertEquals(expressionParser.parse(expression), result)
     }
@@ -121,6 +127,13 @@ class ExpressionParserTest {
             Expression.Operation(Operators.MULTIPLY),
             Expression.Sqrt(2.0)
         )
+        assertEquals(expressionParser.parse(expression), result)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `sqrt failed test`() {
+        val expression = "3√"
+        val result = listOf(Expression.Number(3.0), Expression.Sqrt(1.0))
         assertEquals(expressionParser.parse(expression), result)
     }
 

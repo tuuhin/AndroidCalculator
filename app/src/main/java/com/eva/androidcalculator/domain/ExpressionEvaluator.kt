@@ -61,13 +61,13 @@ class ExpressionEvaluator {
 
                 Expression.Operation(Operators.EXPONENT) -> {
                     val factor = evalFactor(remaining.drop(1))
-                    sum = sum.pow(factor.value)
+                    sum *= sum.pow(factor.value)
                     remaining = factor.remaining
                 }
 
                 Expression.PI -> {
                     val factor = evalFactor(remaining.drop(1))
-                    sum *= PI
+                    sum *= PI * factor.value
                     remaining = factor.remaining
                 }
 
@@ -107,7 +107,13 @@ class ExpressionEvaluator {
                 }
             }
 
+            is Expression.Sqrt -> ExpressionResult(
+                remaining = expression.drop(1),
+                value = part.number.pow(0.5)
+            )
+
             else -> throw RuntimeException("Invalid part")
+
         }
     }
 }

@@ -18,7 +18,8 @@ class ExpressionParser {
                     continue
                 }
 
-                MathsSymbols.PI_SYMBOL -> result.add(Expression.PI)
+                MathsSymbols.PI_SYMBOL -> result.addAll(processPi(expression))
+
                 MathsSymbols.FACTORIAL_SYMBOL -> {
                     val last = result.last()
                     result.remove(last)
@@ -26,7 +27,7 @@ class ExpressionParser {
                 }
 
                 MathsSymbols.SQRT_SYMBOL -> {
-                    val last = result.last()
+                    val last = result.lastOrNull()
                     val pair = parseSqrt(expression, i + 1)
                     if (last is Expression.Number) result.add(Expression.Operation(Operators.MULTIPLY))
                     result.add(pair.second)
@@ -41,14 +42,24 @@ class ExpressionParser {
         return result
     }
 
+    private fun processPi(expression: String): List<Expression> {
+        val isLast = expression.lastOrNull() == MathsSymbols.PI_SYMBOL
+        val isFirst = expression.firstOrNull() == MathsSymbols.PI_SYMBOL
+        return buildList {
+            if (isFirst) add(Expression.Number(1.0))
+            add(Expression.PI)
+            if (isLast) add(Expression.Number(1.0))
+        }
+    }
+
     private fun parseSqrt(expression: String, nextIdx: Int): Pair<Int, Expression.Sqrt> {
-        if (expression.last() == MathsSymbols.SQRT_SYMBOL) throw IllegalArgumentException("Invalid format")
+        if (expression.last() == MathsSymbols.SQRT_SYMBOL) throw IllegalArgumentException("Format Error")
         val number = parseNumbers(nextIdx, expression)
         return Pair(number.first, Expression.Sqrt(number.second.number))
     }
 
     private fun parseFactorial(expression: String, last: Expression): Expression.Factorial {
-        if (expression.first() == MathsSymbols.FACTORIAL_SYMBOL) throw IllegalArgumentException("invalid format")
+        if (expression.first() == MathsSymbols.FACTORIAL_SYMBOL) throw IllegalArgumentException("Format Error")
         if (last !is Expression.Number) throw IllegalArgumentException("Invalid format")
         return Expression.Factorial(last.number)
     }
@@ -65,18 +76,17 @@ class ExpressionParser {
         return Pair(start, Expression.Number(strNumberIntoDouble))
     }
 
-    private fun parseOperator(currentChar: Char): Expression.Operation {
-        return Expression.Operation(Operators.operatorFromSymbol(currentChar))
-    }
+    private fun parseOperator(currentChar: Char): Expression.Operation =
+        Expression.Operation(Operators.operatorFromSymbol(currentChar))
 
 
-    private fun parseParenthesis(currentChar: Char): Expression.Parenthesis {
-        return Expression.Parenthesis(
+    private fun parseParenthesis(currentChar: Char): Expression.Parenthesis =
+        Expression.Parenthesis(
             type = when (currentChar) {
                 MathsSymbols.PARENTHESIS_OPEN -> ParenthesisType.Opening
                 MathsSymbols.PARENTHESIS_CLOSE -> ParenthesisType.Closing
                 else -> throw IllegalArgumentException("Invalid parenthesis type")
             }
         )
-    }
+
 }

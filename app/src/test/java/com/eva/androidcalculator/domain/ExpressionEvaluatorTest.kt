@@ -1,17 +1,11 @@
 package com.eva.androidcalculator.domain
 
 import junit.framework.TestCase.assertEquals
-import org.junit.Before
 import org.junit.Test
 
 
 class ExpressionEvaluatorTest {
-    private lateinit var expressionEvaluator: ExpressionEvaluator
-
-    @Before
-    fun setup() {
-        expressionEvaluator = ExpressionEvaluator()
-    }
+    private val expressionEvaluator = ExpressionEvaluator()
 
     @Test
     fun `normal sum text parsing`() {
@@ -101,11 +95,44 @@ class ExpressionEvaluatorTest {
     }
 
     @Test
-    fun `check pi`() {
+    fun `Area of a circle with radius 5 unit`() {
+        val expression = listOf(
+            Expression.Number(1.0),
+            Expression.PI,
+            Expression.Parenthesis(ParenthesisType.Opening),
+            Expression.Number(5.0),
+            Expression.Operation(Operators.EXPONENT),
+            Expression.Number(2.0),
+            Expression.Parenthesis(ParenthesisType.Closing)
+        )
+        val result = String.format("%.5f", expressionEvaluator.evaluate(expression))
+        val actual = 392.69908
+        assertEquals(result, actual.toString())
+    }
+
+    @Test
+    fun `check 4 value pi`() {
         val expression = listOf(
             Expression.Number(4.0),
             Expression.PI,
+            Expression.Number(1.0)
         )
-        assertEquals(expressionEvaluator.evaluate(expression), 113.097)
+        assertEquals(expressionEvaluator.evaluate(expression), 12.566370614359172)
+    }
+
+    @Test
+    fun `check pi as operator`() {
+        val expression = listOf(Expression.Number(4.0), Expression.PI, Expression.Number(5.0))
+        val result = String.format("%.5f", expressionEvaluator.evaluate(expression))
+        val actual = 62.83185
+        assertEquals(result, actual.toString())
+    }
+
+    @Test
+    fun `check normal pi value`() {
+        val expression = listOf(Expression.Number(1.0), Expression.PI, Expression.Number(1.0))
+        val result = String.format("%.5f", expressionEvaluator.evaluate(expression))
+        val actual = 3.14159
+        assertEquals(result, actual.toString())
     }
 }
